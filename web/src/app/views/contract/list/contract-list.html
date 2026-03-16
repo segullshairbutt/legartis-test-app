@@ -1,0 +1,106 @@
+<div class="p-6 bg-surface">
+  <div class="max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-center">Contracts</h1>
+
+    <div class="card">
+      <p-table
+        [value]="contracts"
+        responsiveLayout="scroll"
+        stripedRows
+        sortField="createdAt"
+        (sortFunction)="sortTableData($event)"
+        [customSort]="true"
+        [sortOrder]="-1"
+        [rows]="pageSize"
+        [paginator]="true"
+        [first]="page"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10, 20, 30]"
+      >
+        <ng-template #caption>
+          <div class="flex gap-4">
+            <p-columnFilter field="category" [showMenu]="false">
+              <ng-template #filter>
+                <p-multiselect
+                  [(ngModel)]="selectedCategories"
+                  [options]="categoryOptions"
+                  placeholder="Filter by category"
+                  (onChange)="filterByCategory()"
+                  style="min-width: 14rem"
+                  [panelStyle]="{ minWidth: '16rem' }"
+                >
+                  <ng-template let-option #item>
+                    <div class="flex items-center gap-2">
+                      <p-tag [value]="option" [severity]="getSeverity(option)"></p-tag>
+                    </div>
+                  </ng-template>
+                </p-multiselect>
+              </ng-template>
+            </p-columnFilter>
+            <p-iconfield iconPosition="left" class="ml-auto">
+              <input
+                pInputText
+                type="text"
+                (input)="searchContracts($event)"
+                placeholder="Search contracts"
+              />
+            </p-iconfield>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="title">
+              <div class="flex items-center gap-2">
+                Title
+                <p-sortIcon field="title" />
+              </div>
+            </th>
+            <th pSortableColumn="numberOfClauses">
+              <div class="flex items-center gap-2">
+                Clauses
+                <p-sortIcon field="numberOfClauses" />
+              </div>
+            </th>
+            <th pSortableColumn="createdAt">
+              <div class="flex items-center gap-2">
+                Created At
+                <p-sortIcon field="createdAt" />
+              </div>
+            </th>
+            <th>Action</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-contract>
+          <tr>
+            <td>
+              {{ contract.title }}
+              <div class="mt-1">
+                <p-tag
+                  *ngFor="let category of contract.categories"
+                  [value]="category"
+                  [severity]="getSeverity(category)"
+                ></p-tag>
+              </div>
+            </td>
+            <td>{{ contract.numberOfClauses }}</td>
+            <td>{{ contract.createdAt | date: 'short' }}</td>
+            <td>
+              <p-button
+                label="View"
+                severity="info"
+                size="small"
+                (onClick)="viewDetail(contract.id)"
+              ></p-button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5" class="text-center py-8">No contracts found</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

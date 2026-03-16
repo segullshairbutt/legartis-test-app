@@ -1,0 +1,53 @@
+<p-dialog
+  [(visible)]="isOpen"
+  [modal]="true"
+  header="Edit Clause"
+  [style]="{ width: '100%', maxWidth: '500px' }"
+  (onHide)="onDialogClose()"
+>
+  <form [formGroup]="clauseForm" (ngSubmit)="onSave()" class="space-y-4">
+    <div>
+      <label class="block text-sm font-medium mb-2">Clause Text</label>
+      <textarea
+        formControlName="text"
+        class="w-full border border-gray-300 rounded px-3 py-2"
+        rows="5"
+        placeholder="Enter clause text..."
+      ></textarea>
+      <small
+        class="text-red-500"
+        *ngIf="clauseForm.get('text')?.invalid && clauseForm.get('text')?.touched"
+      >
+        <span *ngIf="clauseForm.get('text')?.errors?.['required']">Clause text is required</span>
+      </small>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-2">Clause Type</label>
+      <p-select
+        formControlName="type"
+        [options]="clauseTypes"
+        placeholder="Select clause type"
+        optionLabel="label"
+        optionValue="value"
+        class="w-full"
+      ></p-select>
+      <small
+        class="text-red-500"
+        *ngIf="clauseForm.get('type')?.invalid && clauseForm.get('type')?.touched"
+      >
+        Clause type is required
+      </small>
+    </div>
+
+    <div class="flex gap-3 justify-end pt-4">
+      <p-button label="Cancel" severity="secondary" (onClick)="onCancel()"></p-button>
+      <p-button
+        label="Save"
+        severity="success"
+        type="submit"
+        [disabled]="clauseForm.invalid"
+      ></p-button>
+    </div>
+  </form>
+</p-dialog>
