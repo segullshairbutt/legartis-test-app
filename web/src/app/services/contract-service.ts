@@ -41,4 +41,17 @@ export class ContractService {
     }
     return this.http.get<Contract[]>(`${API_BASE_URL}/contracts/`, { params });
   }
+
+  /**
+   * Creates a new contract by uploading a file.
+   * @param name Contract title/name
+   * @param file Text or markdown file containing the contract clauses
+   */
+  createContract(name: string, file: File): Observable<Contract> {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('file', file);
+
+    return this.http.post<Contract>(`${API_BASE_URL}/contracts/`, formData);
+  }
 }
