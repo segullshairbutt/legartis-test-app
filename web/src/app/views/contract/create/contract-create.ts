@@ -66,7 +66,6 @@ export default class ContractCreate implements OnInit {
     const file = input.files && input.files.length ? input.files[0] : null;
 
     this.selectedFile = file;
-    this.contractForm.patchValue({ file });
     this.contractForm.get('file')?.updateValueAndValidity();
   }
 }

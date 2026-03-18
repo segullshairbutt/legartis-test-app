@@ -1,7 +1,5 @@
 from typing import Literal
 from sqlmodel import select, func
-from sqlalchemy import distinct
-from typing import Annotated
 from fastapi import APIRouter, File, Form, Response, UploadFile, status, Query
 from pydantic import BaseModel
 from sqlmodel import select

@@ -67,7 +67,7 @@ export default class ContractDetail implements OnInit {
 
   onClauseSaved(updatedClause: Clause) {
     const index = this.contract?.clauses.findIndex((c) => c.id === updatedClause.id);
-    if (index && index !== -1 && this.contract) {
+    if (index !== undefined && index >= 0 && this.contract) {
       this.contract.clauses[index] = updatedClause;
     }
     this.isClauseDialogOpen = false;
