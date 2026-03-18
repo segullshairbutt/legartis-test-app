@@ -1,59 +1,65 @@
-# Web
+# Web — Angular Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.2.
+Contract management UI built with Angular 21, PrimeNG, and Tailwind CSS.
 
-## Development server
+**Stack:** Angular 21 + PrimeNG + Tailwind CSS + RxJS
 
-To start a local development server, run:
+## Setup
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Local Development
 
 ```bash
-ng generate component component-name
+cd web
+yarn install
+yarn start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+App runs at `http://localhost:4200`
+
+### Docker
 
 ```bash
-ng generate --help
+docker build -t legartis-web .
+docker run -p 4200:4200 legartis-web
 ```
 
-## Building
+## Project Structure
 
-To build the project run:
+```
+web/src/app/
+├── app.routes.ts         # Route definitions
+├── app.ts                # Root component
+├── utils.ts              # Utilities
+├── components/           # Reusable components
+├── services/             # API services
+│   ├── contract-service.ts
+│   └── clause-service.ts
+├── types/                # TypeScript types
+│   └── contract.ts
+└── views/                # Page components
+    ├── contract/list
+    ├── contract/create
+    └── contract/detail
+```
+
+## Features
+
+- Contract listing with search and filters
+- Upload new contracts
+- View contract details and clauses
+- Edit clause information
+
+## Available Commands
 
 ```bash
-ng build
+yarn start       # Dev server
+yarn build       # Production build
+yarn test        # Run tests
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Notes
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- All components are **standalone** for better modularity
+- Uses **Reactive Forms** for type-safe form handling
+- Routes are **lazy-loaded** for better performance
+- File inputs tracked in component state for better control
