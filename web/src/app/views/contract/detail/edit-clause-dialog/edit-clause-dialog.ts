@@ -19,6 +19,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import type { Clause } from 'src/types/contract';
+import { ClauseService } from 'src/services/clause-service';
 
 @Component({
   selector: 'edit-clause-dialog',
@@ -46,7 +47,12 @@ export class EditClauseDialog implements OnInit, OnChanges {
     { label: 'Non-Compete', value: 'Non-Compete' },
   ];
 
-  constructor(private formBuilder: FormBuilder) {
+  isSubmitting = false;
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private clauseService: ClauseService,
+  ) {
     this.clauseForm = this.formBuilder.group({
       id: [''],
       contractId: [''],
@@ -75,10 +81,25 @@ export class EditClauseDialog implements OnInit, OnChanges {
   }
 
   onSave() {
-    if (this.clauseForm.valid) {
-      this.saved.emit(this.clauseForm.value);
-      this.onDialogClose();
+    if (this.clauseForm.invalid) {
+      this.clauseForm.markAllAsTouched();
+      return;
     }
+
+    const { id, type } = this.clauseForm.value;
+    this.isSubmitting = true;
+
+    this.clauseService.updateClauseType(id, type).subscribe({
+      next: (updatedClause) => {
+        this.isSubmitting = false;
+        this.saved.emit(updatedClause);
+        this.onDialogClose();
+      },
+      error: (error) => {
+        console.error('Failed to update clause', error);
+        this.isSubmitting = false;
+      },
+    });
   }
 
   onCancel() {

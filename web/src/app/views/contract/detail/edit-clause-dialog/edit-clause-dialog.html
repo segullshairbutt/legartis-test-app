@@ -41,12 +41,17 @@
     </div>
 
     <div class="flex gap-3 justify-end pt-4">
-      <p-button label="Cancel" severity="secondary" (onClick)="onCancel()"></p-button>
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        (onClick)="onCancel()"
+        [disabled]="isSubmitting"
+      ></p-button>
       <p-button
         label="Save"
         severity="success"
         type="submit"
-        [disabled]="clauseForm.invalid"
+        [disabled]="clauseForm.invalid || isSubmitting"
       ></p-button>
     </div>
   </form>

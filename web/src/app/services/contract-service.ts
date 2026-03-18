@@ -1,9 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
-import { Category, Contract, type ContractDetail, type Clause } from 'src/types/contract';
-
-const API_BASE_URL = 'http://localhost:8000';
+import { Observable } from 'rxjs';
+import { Category, Contract, type ContractDetail } from 'src/types/contract';
+import { environment } from 'src/environments/environment';
 
 interface ContractListRequestParams {
   search?: string;
@@ -39,7 +38,7 @@ export class ContractService {
     if (sort) {
       params = params.set('sort', sort);
     }
-    return this.http.get<Contract[]>(`${API_BASE_URL}/contracts/`, { params });
+    return this.http.get<Contract[]>(`${environment.apiBaseUrl}/contracts/`, { params });
   }
 
   /**
@@ -52,13 +51,13 @@ export class ContractService {
     formData.append('name', name);
     formData.append('file', file);
 
-    return this.http.post<Contract>(`${API_BASE_URL}/contracts/`, formData);
+    return this.http.post<Contract>(`${environment.apiBaseUrl}/contracts/`, formData);
   }
 
   /**
    * Fetches detailed information for a single contract, including its clauses.
    */
   getContractDetail(id: number): Observable<ContractDetail> {
-    return this.http.get<ContractDetail>(`${API_BASE_URL}/contracts/${id}`);
+    return this.http.get<ContractDetail>(`${environment.apiBaseUrl}/contracts/${id}`);
   }
 }
