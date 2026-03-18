@@ -14,13 +14,13 @@
       >
         <ng-template #caption>
           <div class="flex gap-4">
-            <p-columnFilter field="category" [showMenu]="false">
+            <p-columnFilter field="clause_type" [showMenu]="false">
               <ng-template #filter>
                 <p-multiselect
-                  [(ngModel)]="selectedCategories"
-                  [options]="categoryOptions"
-                  placeholder="Filter by category"
-                  (onChange)="filterByCategory()"
+                  [(ngModel)]="selectedClauseTypes"
+                  [options]="clauseTypeOptions"
+                  placeholder="Filter by clause type"
+                  (onChange)="filterByClauseType()"
                   style="min-width: 14rem"
                   [panelStyle]="{ minWidth: '16rem' }"
                 >
@@ -65,7 +65,11 @@
             <td>
               {{ contract.name }}
               <div class="mt-1">
-                <p-tag *ngFor="let category of contract.clause_types" [value]="category" [severity]="getSeverity(category)"></p-tag>
+                <p-tag
+                  *ngFor="let clauseType of contract.clause_types"
+                  [value]="clauseType"
+                  [severity]="getSeverity(clauseType)"
+                ></p-tag>
               </div>
             </td>
             <td>{{ contract.number_of_clauses }}</td>

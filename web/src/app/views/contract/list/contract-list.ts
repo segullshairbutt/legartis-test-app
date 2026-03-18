@@ -9,7 +9,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
-import { Category, type Contract } from 'src/types/contract';
+import { ClauseType, type Contract } from 'src/types/contract';
 import { ContractService } from 'src/services/contract-service';
 import { getSeverityForCategory } from 'src/utils';
 import type { TableLazyLoadEvent } from 'primeng/table';
@@ -34,12 +34,12 @@ export default class ContractList {
   loading = false;
   private searchTerm = '';
   private sortField?: string = '-created_at';
-  categoryOptions = [
-    Category.LimitationOfLiability,
-    Category.TerminationForConvenience,
-    Category.NonCompete,
+  clauseTypeOptions = [
+    ClauseType.LimitationOfLiability,
+    ClauseType.TerminationForConvenience,
+    ClauseType.NonCompete,
   ];
-  selectedCategories: Category[] = [];
+  selectedClauseTypes: ClauseType[] = [];
 
   constructor(
     private router: Router,
@@ -52,7 +52,7 @@ export default class ContractList {
     this.contractService
       .getContracts({
         search: this.searchTerm || undefined,
-        categories: this.selectedCategories.length ? this.selectedCategories : undefined,
+        categories: this.selectedClauseTypes.length ? this.selectedClauseTypes : undefined,
         sort: this.sortField,
       })
       .subscribe({
@@ -68,8 +68,8 @@ export default class ContractList {
       });
   }
 
-  getSeverity(category: Category) {
-    return getSeverityForCategory(category);
+  getSeverity(clauseType: ClauseType) {
+    return getSeverityForCategory(clauseType);
   }
 
   viewDetail(id: number) {
@@ -95,7 +95,7 @@ export default class ContractList {
     this.loadContracts();
   }
 
-  filterByCategory() {
+  filterByClauseType() {
     this.loadContracts();
   }
 }

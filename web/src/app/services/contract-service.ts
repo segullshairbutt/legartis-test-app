@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Category, Contract, type ContractDetail } from 'src/types/contract';
+import { ClauseType, Contract, type ContractDetail } from 'src/types/contract';
 import { environment } from 'src/environments/environment';
 
 interface ContractListRequestParams {
   search?: string;
-  categories?: Category[];
+  categories?: ClauseType[];
   sort?: string;
 }
 
@@ -31,8 +31,8 @@ export class ContractService {
       params = params.set('search', search);
     }
     if (categories && categories.length) {
-      categories.forEach((category) => {
-        params = params.append('categories', category);
+      categories.forEach((clauseType) => {
+        params = params.append('categories', clauseType);
       });
     }
     if (sort) {

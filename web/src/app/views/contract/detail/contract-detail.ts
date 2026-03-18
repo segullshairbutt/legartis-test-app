@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
-import { ContractDetail as ContractDetailDTO, type Clause, Category } from 'src/types/contract';
+import { ContractDetail as ContractDetailDTO, type Clause, ClauseType } from 'src/types/contract';
 import { ContractService } from 'src/services/contract-service';
 import { getSeverityForCategory } from 'src/utils';
 import { EditClauseDialog } from './edit-clause-dialog/edit-clause-dialog';

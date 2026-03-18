@@ -1,17 +1,17 @@
-import { Category } from './types/contract';
+import { ClauseType } from './types/contract';
 
 type Severity = 'info' | 'success' | 'warn' | null;
 
 /**
  * Returns a severity level for a given clause category, used for UI styling in PrimeNG components.
  */
-export function getSeverityForCategory(category: Category | string): Severity {
+export function getSeverityForCategory(category: ClauseType | string): Severity {
   switch (category) {
-    case Category.LimitationOfLiability:
+    case ClauseType.LimitationOfLiability:
       return 'info';
-    case Category.TerminationForConvenience:
+    case ClauseType.TerminationForConvenience:
       return 'success';
-    case Category.NonCompete:
+    case ClauseType.NonCompete:
       return 'warn';
     default:
       return null;

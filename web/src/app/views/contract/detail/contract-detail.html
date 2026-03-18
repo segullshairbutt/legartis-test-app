@@ -12,9 +12,9 @@
         <div class="flex items-center gap-4">
           <span class="text-gray-600">Created: {{ contract.created_at | date: 'short' }}</span>
           <p-tag
-            *ngFor="let category of contract.clause_types"
-            [value]="category"
-            [severity]="getSeverity(category)"
+            *ngFor="let clauseType of contract.clause_types"
+            [value]="clauseType"
+            [severity]="getSeverity(clauseType)"
           ></p-tag>
         </div>
       </div>
