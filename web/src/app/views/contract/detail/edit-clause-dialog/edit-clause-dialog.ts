@@ -67,9 +67,9 @@ export class EditClauseDialog implements OnInit, OnChanges {
     if (this.clause && this.clauseForm) {
       this.clauseForm.patchValue({
         id: this.clause.id,
-        contractId: this.clause.contractId,
-        text: this.clause.text,
-        type: this.clause.type,
+        contractId: this.clause.contract_id,
+        text: this.clause.clause_text,
+        type: this.clause.clause_type,
       });
     }
   }

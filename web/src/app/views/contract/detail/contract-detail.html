@@ -24,7 +24,7 @@
     <!-- Clauses Table -->
     <div class="card">
       <h2 class="text-2xl font-bold mb-4">Contract Clauses</h2>
-      <p-table [value]="clauses" responsiveLayout="scroll">
+      <p-table [value]="contract?.clauses ? contract.clauses : []" responsiveLayout="scroll">
         <ng-template pTemplate="header">
           <tr>
             <th style="width: 70%">Clause Text</th>
@@ -34,9 +34,12 @@
         </ng-template>
         <ng-template pTemplate="body" let-clause>
           <tr>
-            <td>{{ clause.text }}</td>
+            <td>{{ clause.clause_text }}</td>
             <td>
-              <p-tag [value]="clause.type" [severity]="getSeverity(clause.type)"></p-tag>
+              <p-tag
+                [value]="clause.clause_type"
+                [severity]="getSeverity(clause.clause_type)"
+              ></p-tag>
             </td>
             <td>
               <p-button

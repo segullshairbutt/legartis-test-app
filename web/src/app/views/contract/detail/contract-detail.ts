@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
-import { type Contract, type Clause, Category } from 'src/types/contract';
+import { ContractDetail as ContractDetailDTO, type Clause, Category } from 'src/types/contract';
+import { ContractService } from 'src/services/contract-service';
 import { EditClauseDialog } from './edit-clause-dialog/edit-clause-dialog';
 
 @Component({
@@ -13,14 +14,15 @@ import { EditClauseDialog } from './edit-clause-dialog/edit-clause-dialog';
   imports: [CommonModule, TableModule, ButtonModule, TagModule, EditClauseDialog],
 })
 export default class ContractDetail implements OnInit {
-  contract: Contract | null = null;
-  clauses: Clause[] = [];
+  contract: ContractDetailDTO | null = null;
   isClauseDialogOpen = false;
   selectedClause: Clause | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private contractService: ContractService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -28,50 +30,26 @@ export default class ContractDetail implements OnInit {
   }
 
   loadContractDetail() {
-    // Get contract ID from route params
+    // Get contract ID from route params and fetch from API
     this.route.params.subscribe((params) => {
-      const contractId = params['id'];
-      // Mock data - later this will come from API
-      this.contract = {
-        id: contractId,
-        title: 'Service Agreement',
-        number_of_clauses: 4,
-        clause_types: [Category.LimitationOfLiability],
-        created_at: new Date('2026-01-15'),
-      };
-      // Fetch clauses separately
-      this.loadClauses(contractId);
-    });
-  }
+      const contractId = Number(params['id']);
 
-  loadClauses(contractId: number) {
-    // Mock data - later this will come from API
-    this.clauses = [
-      {
-        id: 1,
-        contractId: contractId,
-        text: 'Neither party shall be liable for any indirect, incidental, special, consequential damages.',
-        type: Category.LimitationOfLiability,
-      },
-      {
-        id: 2,
-        contractId: contractId,
-        text: 'The total liability of each party shall not exceed the fees paid in the past 12 months.',
-        type: Category.LimitationOfLiability,
-      },
-      {
-        id: 3,
-        contractId: contractId,
-        text: 'Either party may terminate this agreement without cause with 30 days written notice.',
-        type: Category.TerminationForConvenience,
-      },
-      {
-        id: 4,
-        contractId: contractId,
-        text: 'The employee agrees not to compete with the company within 50 miles for 2 years after termination.',
-        type: Category.NonCompete,
-      },
-    ];
+      if (Number.isNaN(contractId)) {
+        this.router.navigate(['/contracts']);
+        return;
+      }
+
+      this.contractService.getContractDetail(contractId).subscribe({
+        next: (detail) => {
+          this.contract = detail;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Failed to load contract details', error);
+          this.router.navigate(['/contracts']);
+        },
+      });
+    });
   }
 
   getSeverity(clauseType: string) {
@@ -96,9 +74,9 @@ export default class ContractDetail implements OnInit {
   }
 
   onClauseSaved(updatedClause: Clause) {
-    const index = this.clauses.findIndex((c) => c.id === updatedClause.id);
-    if (index !== -1) {
-      this.clauses[index] = updatedClause;
+    const index = this.contract?.clauses.findIndex((c) => c.id === updatedClause.id);
+    if (index && index !== -1 && this.contract) {
+      this.contract.clauses[index] = updatedClause;
     }
     this.isClauseDialogOpen = false;
   }

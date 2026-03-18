@@ -6,9 +6,9 @@ enum Category {
 
 interface Clause {
   id: number;
-  contractId: number;
-  text: string;
-  type: Category;
+  contract_id: number;
+  clause_text: string;
+  clause_type: Category;
 }
 
 interface Contract {
@@ -19,5 +19,9 @@ interface Contract {
   created_at: Date;
 }
 
-export type { Contract, Clause };
+interface ContractDetail extends Contract {
+  clauses: Clause[];
+}
+
+export type { Contract, Clause, ContractDetail };
 export { Category };

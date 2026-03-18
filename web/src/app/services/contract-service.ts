@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { Category, Contract } from 'src/types/contract';
+import { Category, Contract, type ContractDetail, type Clause } from 'src/types/contract';
 
 const API_BASE_URL = 'http://localhost:8000';
 
@@ -53,5 +53,12 @@ export class ContractService {
     formData.append('file', file);
 
     return this.http.post<Contract>(`${API_BASE_URL}/contracts/`, formData);
+  }
+
+  /**
+   * Fetches detailed information for a single contract, including its clauses.
+   */
+  getContractDetail(id: number): Observable<ContractDetail> {
+    return this.http.get<ContractDetail>(`${API_BASE_URL}/contracts/${id}`);
   }
 }
