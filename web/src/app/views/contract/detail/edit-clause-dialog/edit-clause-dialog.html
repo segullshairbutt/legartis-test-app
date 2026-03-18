@@ -7,22 +7,6 @@
 >
   <form [formGroup]="clauseForm" (ngSubmit)="onSave()" class="space-y-4">
     <div>
-      <label class="block text-sm font-medium mb-2">Clause Text</label>
-      <textarea
-        formControlName="text"
-        class="w-full border border-gray-300 rounded px-3 py-2"
-        rows="5"
-        placeholder="Enter clause text..."
-      ></textarea>
-      <small
-        class="text-red-500"
-        *ngIf="clauseForm.get('text')?.invalid && clauseForm.get('text')?.touched"
-      >
-        <span *ngIf="clauseForm.get('text')?.errors?.['required']">Clause text is required</span>
-      </small>
-    </div>
-
-    <div>
       <label class="block text-sm font-medium mb-2">Clause Type</label>
       <p-select
         formControlName="type"
@@ -39,7 +23,21 @@
         Clause type is required
       </small>
     </div>
-
+    <div>
+      <label class="block text-sm font-medium mb-2">Clause Text</label>
+      <textarea
+        formControlName="text"
+        class="w-full border border-gray-300 rounded px-3 py-2"
+        rows="5"
+        placeholder="Enter clause text..."
+      ></textarea>
+      <small
+        class="text-red-500"
+        *ngIf="clauseForm.get('text')?.invalid && clauseForm.get('text')?.touched"
+      >
+        <span *ngIf="clauseForm.get('text')?.errors?.['required']">Clause text is required</span>
+      </small>
+    </div>
     <div class="flex gap-3 justify-end pt-4">
       <p-button
         label="Cancel"

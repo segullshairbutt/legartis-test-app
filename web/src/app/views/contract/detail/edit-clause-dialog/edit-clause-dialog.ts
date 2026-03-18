@@ -77,6 +77,7 @@ export class EditClauseDialog implements OnInit, OnChanges {
         text: this.clause.clause_text,
         type: this.clause.clause_type,
       });
+      this.clauseForm.get('text')?.disable();
     }
   }
 
