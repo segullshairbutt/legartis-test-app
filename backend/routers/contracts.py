@@ -64,7 +64,7 @@ def get_contracts(
             id=r.id,
             name=r.name,
             number_of_clauses=r.number_of_clauses,
-            clause_types={ClauseType[c] for c in set(rows[0].clause_types.split(','))},
+            clause_types={ClauseType[c] for c in set(r.clause_types.split(','))},
             created_at=r.created_at,
         )
         for r in rows

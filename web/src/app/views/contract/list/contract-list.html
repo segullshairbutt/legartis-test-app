@@ -65,7 +65,7 @@
             <td>
               {{ contract.name }}
               <div class="mt-1">
-                <p-tag *ngFor="let category of contract.clause_types" [value]="category"></p-tag>
+                <p-tag *ngFor="let category of contract.clause_types" [value]="category" [severity]="getSeverity(category)"></p-tag>
               </div>
             </td>
             <td>{{ contract.number_of_clauses }}</td>

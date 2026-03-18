@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { ContractDetail as ContractDetailDTO, type Clause, Category } from 'src/types/contract';
 import { ContractService } from 'src/services/contract-service';
+import { getSeverityForCategory } from 'src/utils';
 import { EditClauseDialog } from './edit-clause-dialog/edit-clause-dialog';
 
 @Component({
@@ -53,16 +54,7 @@ export default class ContractDetail implements OnInit {
   }
 
   getSeverity(clauseType: string) {
-    switch (clauseType) {
-      case 'Limitation of Liability':
-        return 'info';
-      case 'Termination for Convenience':
-        return 'success';
-      case 'Non-Compete':
-        return 'warn';
-      default:
-        return 'info';
-    }
+    return getSeverityForCategory(clauseType);
   }
   goBack() {
     this.router.navigate(['/contracts']);

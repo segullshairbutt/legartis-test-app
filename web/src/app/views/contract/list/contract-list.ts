@@ -11,7 +11,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
 import { Category, type Contract } from 'src/types/contract';
 import { ContractService } from 'src/services/contract-service';
-import { SortEvent } from 'primeng/api';
+import { getSeverityForCategory } from 'src/utils';
 import type { TableLazyLoadEvent } from 'primeng/table';
 
 @Component({
@@ -69,16 +69,7 @@ export default class ContractList {
   }
 
   getSeverity(category: Category) {
-    switch (category) {
-      case Category.LimitationOfLiability:
-        return 'info';
-      case Category.TerminationForConvenience:
-        return 'success';
-      case Category.NonCompete:
-        return 'warn';
-      default:
-        return null;
-    }
+    return getSeverityForCategory(category);
   }
 
   viewDetail(id: number) {
