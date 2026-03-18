@@ -14,9 +14,9 @@ interface Clause {
 interface Contract {
   id: number;
   title: string;
-  numberOfClauses: number;
-  categories: Category[];
-  createdAt: Date;
+  number_of_clauses: number;
+  clause_types: Category[];
+  created_at: Date;
 }
 
 export type { Contract, Clause };

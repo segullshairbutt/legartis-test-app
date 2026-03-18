@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { SelectModule } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { Table, TableModule, TableLazyLoadEvent, TablePageEvent } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
 import { Category, type Contract } from 'src/types/contract';
+import { ContractService } from 'src/services/contract-service';
 import { SortEvent } from 'primeng/api';
+import type { TableLazyLoadEvent } from 'primeng/table';
 
 @Component({
   selector: 'contract-list',
@@ -28,11 +29,11 @@ import { SortEvent } from 'primeng/api';
     TagModule,
   ],
 })
-export default class ContractList implements OnInit {
+export default class ContractList {
   contracts: Contract[] = [];
-  totalRecords: number = 0;
-  page: number = 0;
-  pageSize: number = 10;
+  loading = false;
+  private searchTerm = '';
+  private sortField?: string = '-created_at';
   categoryOptions = [
     Category.LimitationOfLiability,
     Category.TerminationForConvenience,
@@ -40,59 +41,31 @@ export default class ContractList implements OnInit {
   ];
   selectedCategories: Category[] = [];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private contractService: ContractService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
-  ngOnInit() {
-    // Initial load with default lazy load event
-    this.loadContracts({} as TableLazyLoadEvent);
-  }
-
-  loadContracts(event: TableLazyLoadEvent) {
-    // Build API parameters from lazy load event
-    const sortField = event.sortField;
-    const sortOrder = event.sortOrder; // 1 for ascending, -1 for descending
-    const page = event.first || 0;
-    const pageSize = event.rows || 10;
-
-    console.log('Sort field:', sortField);
-    console.log('Sort order:', sortOrder);
-    console.log('Page:', page, 'Rows:', pageSize);
-
-    // TODO: Replace with actual API call
-    // this.contractService.getContracts({ sortField, sortOrder, first, rows }).subscribe(...)
-
-    // Demo data - later this will come from API
-    this.totalRecords = this.contracts.length;
-    this.contracts = [
-      {
-        id: 1,
-        title: 'Service Agreement',
-        numberOfClauses: 8,
-        categories: [Category.LimitationOfLiability],
-        createdAt: new Date('2026-01-15'),
-      },
-      {
-        id: 2,
-        title: 'NDA Contract',
-        numberOfClauses: 5,
-        categories: [Category.NonCompete],
-        createdAt: new Date('2026-02-20'),
-      },
-      {
-        id: 3,
-        title: 'Employment Contract',
-        numberOfClauses: 12,
-        categories: [Category.TerminationForConvenience],
-        createdAt: new Date('2026-03-10'),
-      },
-      {
-        id: 4,
-        title: 'Vendor Agreement',
-        numberOfClauses: 7,
-        categories: [Category.LimitationOfLiability],
-        createdAt: new Date('2026-03-05'),
-      },
-    ];
+  private loadContracts() {
+    this.loading = true;
+    this.contractService
+      .getContracts({
+        search: this.searchTerm || undefined,
+        categories: this.selectedCategories.length ? this.selectedCategories : undefined,
+        sort: this.sortField,
+      })
+      .subscribe({
+        next: (contracts) => {
+          this.contracts = [...contracts];
+          this.loading = false;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Failed to load contracts', error);
+          this.loading = false;
+        },
+      });
   }
 
   getSeverity(category: Category) {
@@ -108,41 +81,30 @@ export default class ContractList implements OnInit {
     }
   }
 
-  clear(table: Table) {
-    table.clear();
-  }
-
   viewDetail(id: number) {
     this.router.navigate(['/contracts', id]);
   }
 
-  next() {
-    this.page = this.page + this.pageSize;
-  }
+  onLazyLoad(event: TableLazyLoadEvent) {
+    const field = (event.sortField as string) || 'created_at';
+    const order = (event.sortOrder as 1 | -1 | 0 | undefined) ?? -1;
 
-  prev() {
-    this.page = this.page - this.pageSize;
-  }
+    if (order === 0 || !order) {
+      this.sortField = undefined;
+    } else {
+      // Encode direction directly for backend: `field` or `-field`
+      this.sortField = order === -1 ? `-${field}` : field;
+    }
 
-  reset() {
-    this.page = 0;
-  }
-
-  pageChange(event: TablePageEvent) {
-    this.page = event.first;
-    this.pageSize = event.rows;
-  }
-
-  sortTableData(event: SortEvent) {
-    console.log('Sort event:', event);
+    this.loadContracts();
   }
 
   searchContracts(event: Event) {
-    const query = (event.target as HTMLInputElement).value;
-    console.log('Search query:', query);
+    this.searchTerm = (event.target as HTMLInputElement).value;
+    this.loadContracts();
   }
 
   filterByCategory() {
-    console.log('Selected categories:', this.selectedCategories);
+    this.loadContracts();
   }
 }

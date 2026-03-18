@@ -33,7 +33,7 @@ def get_contracts(
     session: SessionDep, 
     search: str | None = None, 
     categories: list[ClauseType] | None = Query(None), 
-    sort: Literal['name', 'created_at', 'number_of_clauses', '-name', '-created_at', '-number_of_clauses'] | None = None
+    sort: Literal['name', 'created_at', '-name', '-created_at'] | None = None
     ):
     """Endpoint to retrieve a list of contracts with optional search, filtering, and sorting."""
     query = select(

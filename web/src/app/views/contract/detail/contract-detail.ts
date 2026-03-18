@@ -35,9 +35,9 @@ export default class ContractDetail implements OnInit {
       this.contract = {
         id: contractId,
         title: 'Service Agreement',
-        numberOfClauses: 4,
-        categories: [Category.LimitationOfLiability],
-        createdAt: new Date('2026-01-15'),
+        number_of_clauses: 4,
+        clause_types: [Category.LimitationOfLiability],
+        created_at: new Date('2026-01-15'),
       };
       // Fetch clauses separately
       this.loadClauses(contractId);

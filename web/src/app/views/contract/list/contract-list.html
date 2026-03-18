@@ -1,22 +1,16 @@
 <div class="p-6 bg-surface">
   <div class="max-w-7xl mx-auto">
     <h1 class="text-3xl font-bold mb-6 text-center">Contracts</h1>
-
     <div class="card">
       <p-table
-        [value]="contracts"
+        [value]="contracts || []"
+        [lazy]="true"
+        (onLazyLoad)="onLazyLoad($event)"
         responsiveLayout="scroll"
         stripedRows
-        sortField="createdAt"
-        (sortFunction)="sortTableData($event)"
-        [customSort]="true"
+        [sortField]="'created_at'"
         [sortOrder]="-1"
-        [rows]="pageSize"
-        [paginator]="true"
-        [first]="page"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [rowsPerPageOptions]="[10, 20, 30]"
+        [loading]="loading"
       >
         <ng-template #caption>
           <div class="flex gap-4">
@@ -50,22 +44,17 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th pSortableColumn="title">
+            <th pSortableColumn="name">
               <div class="flex items-center gap-2">
                 Title
-                <p-sortIcon field="title" />
+                <p-sortIcon field="name" />
               </div>
             </th>
-            <th pSortableColumn="numberOfClauses">
-              <div class="flex items-center gap-2">
-                Clauses
-                <p-sortIcon field="numberOfClauses" />
-              </div>
-            </th>
-            <th pSortableColumn="createdAt">
+            <th>Clauses</th>
+            <th pSortableColumn="created_at">
               <div class="flex items-center gap-2">
                 Created At
-                <p-sortIcon field="createdAt" />
+                <p-sortIcon field="created_at" />
               </div>
             </th>
             <th>Action</th>
@@ -74,17 +63,13 @@
         <ng-template pTemplate="body" let-contract>
           <tr>
             <td>
-              {{ contract.title }}
+              {{ contract.name }}
               <div class="mt-1">
-                <p-tag
-                  *ngFor="let category of contract.categories"
-                  [value]="category"
-                  [severity]="getSeverity(category)"
-                ></p-tag>
+                <p-tag *ngFor="let category of contract.clause_types" [value]="category"></p-tag>
               </div>
             </td>
-            <td>{{ contract.numberOfClauses }}</td>
-            <td>{{ contract.createdAt | date: 'short' }}</td>
+            <td>{{ contract.number_of_clauses }}</td>
+            <td>{{ contract.created_at | date: 'short' }}</td>
             <td>
               <p-button
                 label="View"
