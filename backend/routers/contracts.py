@@ -34,27 +34,31 @@ def get_contracts(
     session: SessionDep,
     search: str | None = None,
     categories: list[ClauseType] | None = Query(None),
-    sort: Literal["name", "created_at", "-name", "-created_at"] | None = None,
+    sort: Literal["name", "created_at", "-name", "-created_at", "number_of_clauses", "-number_of_clauses"] | None = None,
 ):
     """Endpoint to retrieve a list of contracts with optional search, filtering, and sorting."""
+    number_of_clauses_col = func.count(ContractClause.id).label("number_of_clauses")
+    sort_fields_map = {
+        "name": Contract.name,
+        "created_at": Contract.created_at,
+        "number_of_clauses": number_of_clauses_col,
+    }
     query = (
         select(
             Contract.id,
             Contract.name,
             Contract.created_at,
-            func.count(ContractClause.id).label("number_of_clauses"),
+            number_of_clauses_col,
             func.group_concat(ContractClause.clause_type, ",").label("clause_types"),
         )
         .join(ContractClause)
         .group_by(Contract.id)
     )
     if sort:
-        if sort.startswith("-"):
-            sort_field = sort[1:]
-            query = query.order_by(getattr(Contract, sort_field).desc())
-        else:
-            sort_field = sort
-            query = query.order_by(getattr(Contract, sort_field).asc())
+        is_desc = sort.startswith("-")
+        field_name = sort[1:] if is_desc else sort
+        sort_col = sort_fields_map[field_name]
+        query = query.order_by(sort_col.desc() if is_desc else sort_col.asc())
     # Apply default sorting by created_at desc for consistent results when no sort parameter is provided
     # or when multiple records have the same value in the sorted field
     query = query.order_by(Contract.created_at.desc())

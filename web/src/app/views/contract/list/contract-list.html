@@ -50,7 +50,12 @@
                 <p-sortIcon field="name" />
               </div>
             </th>
-            <th>Clauses</th>
+            <th pSortableColumn="number_of_clauses">
+              <div class="flex items-center gap-2">
+                Clauses
+                <p-sortIcon field="number_of_clauses" />
+              </div>
+            </th>
             <th pSortableColumn="created_at">
               <div class="flex items-center gap-2">
                 Created At
