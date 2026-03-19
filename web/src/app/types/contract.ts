@@ -4,6 +4,12 @@ enum ClauseType {
   NonCompete = 'Non-Compete',
 }
 
+const CLAUSE_TYPE_OPTIONS = [
+  ClauseType.LimitationOfLiability,
+  ClauseType.TerminationForConvenience,
+  ClauseType.NonCompete,
+];
+
 interface Clause {
   id: number;
   contract_id: number;
@@ -24,4 +30,4 @@ interface ContractDetail extends Contract {
 }
 
 export type { Contract, Clause, ContractDetail };
-export { ClauseType };
+export { ClauseType, CLAUSE_TYPE_OPTIONS };

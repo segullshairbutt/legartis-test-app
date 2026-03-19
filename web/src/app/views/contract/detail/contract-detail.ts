@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
-import { ContractDetail as ContractDetailDTO, type Clause, ClauseType } from 'src/types/contract';
+import { ContractDetail as ContractDetailDTO, type Clause } from 'src/types/contract';
 import { ContractService } from 'src/services/contract-service';
 import { getSeverityForCategory } from 'src/utils';
 import { EditClauseDialog } from './edit-clause-dialog/edit-clause-dialog';
@@ -14,48 +15,47 @@ import { EditClauseDialog } from './edit-clause-dialog/edit-clause-dialog';
   templateUrl: './contract-detail.html',
   imports: [CommonModule, TableModule, ButtonModule, TagModule, EditClauseDialog],
 })
-export default class ContractDetail implements OnInit {
-  contract: ContractDetailDTO | null = null;
+export default class ContractDetail {
+  contractDetail$ = new Subject<ContractDetailDTO>();
   isClauseDialogOpen = false;
   selectedClause: Clause | null = null;
+  private contractId: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private contractService: ContractService,
-    private cdr: ChangeDetectorRef,
-  ) {}
-
-  ngOnInit() {
-    this.loadContractDetail();
-  }
-
-  loadContractDetail() {
-    // Get contract ID from route params and fetch from API
+  ) {
     this.route.params.subscribe((params) => {
       const contractId = Number(params['id']);
 
       if (Number.isNaN(contractId)) {
-        this.router.navigate(['/contracts']);
+        this.router.navigate(['/404']);
         return;
       }
 
-      this.contractService.getContractDetail(contractId).subscribe({
-        next: (detail) => {
-          this.contract = detail;
-          this.cdr.detectChanges();
-        },
-        error: (error) => {
-          console.error('Failed to load contract details', error);
-          this.router.navigate(['/contracts']);
-        },
-      });
+      this.contractId = contractId;
+      this.fetchContractDetail(contractId);
+    });
+  }
+
+  private fetchContractDetail(contractId: number) {
+    this.contractService.getContractDetail(contractId).subscribe({
+      next: (detail) => this.contractDetail$.next(detail),
+      error: (error) => {
+        if (error.status === 404) {
+          this.router.navigate(['/404']);
+        } else {
+          console.error('Error fetching contract detail:', error);
+        }
+      },
     });
   }
 
   getSeverity(clauseType: string) {
     return getSeverityForCategory(clauseType);
   }
+
   goBack() {
     this.router.navigate(['/contracts']);
   }
@@ -65,11 +65,14 @@ export default class ContractDetail implements OnInit {
     this.isClauseDialogOpen = true;
   }
 
-  onClauseSaved(updatedClause: Clause) {
-    const index = this.contract?.clauses.findIndex((c) => c.id === updatedClause.id);
-    if (index !== undefined && index >= 0 && this.contract) {
-      this.contract.clauses[index] = updatedClause;
-    }
+  onDialogClose() {
     this.isClauseDialogOpen = false;
+  }
+
+  onClauseSaved() {
+    this.isClauseDialogOpen = false;
+    if (this.contractId !== null) {
+      this.fetchContractDetail(this.contractId);
+    }
   }
 }

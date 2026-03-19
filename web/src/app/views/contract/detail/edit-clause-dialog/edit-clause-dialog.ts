@@ -19,6 +19,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import type { Clause } from 'src/types/contract';
+import { CLAUSE_TYPE_OPTIONS } from 'src/types/contract';
 import { ClauseService } from 'src/services/clause-service';
 
 @Component({
@@ -37,15 +38,11 @@ import { ClauseService } from 'src/services/clause-service';
 export class EditClauseDialog implements OnInit, OnChanges {
   @Input() clause!: Clause;
   @Input() isOpen = false;
-  @Output() isOpenChange = new EventEmitter<boolean>();
+  @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<Clause>();
 
+  clauseTypes = CLAUSE_TYPE_OPTIONS;
   clauseForm!: FormGroup;
-  clauseTypes = [
-    { label: 'Limitation of Liability', value: 'Limitation of Liability' },
-    { label: 'Termination for Convenience', value: 'Termination for Convenience' },
-    { label: 'Non-Compete', value: 'Non-Compete' },
-  ];
 
   isSubmitting = false;
 
@@ -108,7 +105,6 @@ export class EditClauseDialog implements OnInit, OnChanges {
   }
 
   onDialogClose() {
-    this.isOpen = false;
-    this.isOpenChange.emit(false);
+    this.close.emit();
   }
 }

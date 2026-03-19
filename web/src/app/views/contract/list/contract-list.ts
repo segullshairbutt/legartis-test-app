@@ -9,7 +9,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
-import { ClauseType, type Contract } from 'src/types/contract';
+import { ClauseType, type Contract, CLAUSE_TYPE_OPTIONS } from 'src/types/contract';
 import { ContractService } from 'src/services/contract-service';
 import { getSeverityForCategory } from 'src/utils';
 import type { TableLazyLoadEvent } from 'primeng/table';
@@ -34,11 +34,7 @@ export default class ContractList {
   loading = false;
   private searchTerm = '';
   private sortField?: string = '-created_at';
-  clauseTypeOptions = [
-    ClauseType.LimitationOfLiability,
-    ClauseType.TerminationForConvenience,
-    ClauseType.NonCompete,
-  ];
+  clauseTypeOptions = CLAUSE_TYPE_OPTIONS;
   selectedClauseTypes: ClauseType[] = [];
 
   constructor(

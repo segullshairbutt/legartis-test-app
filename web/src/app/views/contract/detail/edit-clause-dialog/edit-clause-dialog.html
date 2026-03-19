@@ -1,9 +1,9 @@
 <p-dialog
-  [(visible)]="isOpen"
+  [visible]="isOpen"
   [modal]="true"
   header="Edit Clause"
   [style]="{ width: '100%', maxWidth: '500px' }"
-  (onHide)="onDialogClose()"
+  (onHide)="close.emit()"
 >
   <form [formGroup]="clauseForm" (ngSubmit)="onSave()" class="space-y-4">
     <div>
@@ -12,8 +12,6 @@
         formControlName="type"
         [options]="clauseTypes"
         placeholder="Select clause type"
-        optionLabel="label"
-        optionValue="value"
         class="w-full"
       ></p-select>
       <small
