@@ -3,14 +3,14 @@
     <h1 class="text-3xl font-bold mb-6 text-center">Contracts</h1>
     <div class="card">
       <p-table
-        [value]="contracts || []"
+        [value]="(contracts$ | async) || []"
         [lazy]="true"
         (onLazyLoad)="onLazyLoad($event)"
         responsiveLayout="scroll"
         stripedRows
         [sortField]="'created_at'"
         [sortOrder]="-1"
-        [loading]="loading"
+        [loading]="loading$ | async"
       >
         <ng-template #caption>
           <div class="flex gap-4">

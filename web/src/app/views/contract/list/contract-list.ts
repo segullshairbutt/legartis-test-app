@@ -1,7 +1,8 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -30,8 +31,8 @@ import type { TableLazyLoadEvent } from 'primeng/table';
   ],
 })
 export default class ContractList {
-  contracts: Contract[] = [];
-  loading = false;
+  contracts$ = new Subject<Contract[]>();
+  loading$ = new Subject<boolean>();
   private searchTerm = '';
   private sortField?: string = '-created_at';
   clauseTypeOptions = CLAUSE_TYPE_OPTIONS;
@@ -40,11 +41,10 @@ export default class ContractList {
   constructor(
     private router: Router,
     private contractService: ContractService,
-    private cdr: ChangeDetectorRef,
   ) {}
 
   private loadContracts() {
-    this.loading = true;
+    this.loading$.next(true);
     this.contractService
       .getContracts({
         search: this.searchTerm || undefined,
@@ -53,13 +53,12 @@ export default class ContractList {
       })
       .subscribe({
         next: (contracts) => {
-          this.contracts = [...contracts];
-          this.loading = false;
-          this.cdr.detectChanges();
+          this.contracts$.next([...contracts]);
+          this.loading$.next(false);
         },
         error: (error) => {
           console.error('Failed to load contracts', error);
-          this.loading = false;
+          this.loading$.next(false);
         },
       });
   }
