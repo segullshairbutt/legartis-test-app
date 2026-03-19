@@ -15,7 +15,6 @@ export default class ContractCreate implements OnInit {
   contractForm!: FormGroup;
   isSubmitting = false;
   successMessage = '';
-  private selectedFile: File | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -29,21 +28,21 @@ export default class ContractCreate implements OnInit {
   initializeForm() {
     this.contractForm = this.formBuilder.group({
       title: ['', [Validators.required]],
-      file: ['', [Validators.required]],
+      file: [null, [Validators.required]],
     });
   }
 
   onSubmit() {
-    if (this.contractForm.invalid || !this.selectedFile) {
+    if (this.contractForm.invalid) {
       this.contractForm.markAllAsTouched();
       return;
     }
 
-    const { title } = this.contractForm.value;
+    const { title, file } = this.contractForm.value;
     this.isSubmitting = true;
     this.successMessage = '';
 
-    this.contractService.createContract(title, this.selectedFile).subscribe({
+    this.contractService.createContract(title, file).subscribe({
       next: () => {
         this.isSubmitting = false;
         this.successMessage = 'Contract created successfully.';
@@ -58,14 +57,12 @@ export default class ContractCreate implements OnInit {
 
   resetForm() {
     this.contractForm.reset();
-    this.selectedFile = null;
   }
 
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files && input.files.length ? input.files[0] : null;
 
-    this.selectedFile = file;
-    this.contractForm.get('file')?.updateValueAndValidity();
+    this.contractForm.get('file')?.setValue(file);
   }
 }

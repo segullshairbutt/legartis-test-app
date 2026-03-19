@@ -1,12 +1,4 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnInit,
-  OnChanges,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormsModule,
@@ -35,7 +27,7 @@ import { ClauseService } from 'src/services/clause-service';
     SelectModule,
   ],
 })
-export class EditClauseDialog implements OnInit, OnChanges {
+export class EditClauseDialog implements OnChanges {
   @Input() clause!: Clause;
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
@@ -57,8 +49,6 @@ export class EditClauseDialog implements OnInit, OnChanges {
       type: ['', Validators.required],
     });
   }
-
-  ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['clause'] && this.clause) {
