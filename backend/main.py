@@ -8,11 +8,13 @@ ALLOWED_ORIGINS = [
     "http://localhost:4200",
 ]
 
+
 async def lifespan(app: FastAPI):
     """Lifespan function to handle application startup and shutdown events."""
     create_db_and_tables()
     yield
     engine.dispose()
+
 
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(
